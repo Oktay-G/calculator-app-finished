@@ -1,0 +1,47 @@
+name: Checkout Example
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  checkout-example:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the repository
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Step 2: Verify code on runner
+      - name: List files and folders
+        run: ls -alhR
+
+name: Dependencies Example
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  dependencies-example:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the repository
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Step 2: Setup Node.js and NPM
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20   # You can adjust this version if needed
+
+      # Step 3: Install dependencies
+      - name: Install NPM dependencies
+        run: npm install
+
+      # Step 4: Verify files and structure
+      - name: List files and folders
+        run: ls -alhR
