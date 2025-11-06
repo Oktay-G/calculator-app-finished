@@ -1,0 +1,38 @@
+name: Build Example
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build-example:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the repository
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Step 2: Setup Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20  # Use the version that matches your project
+
+      # Step 3: Install dependencies
+      - name: Install NPM dependencies
+        run: npm install
+
+      # Step 4: (Optional) Build step if your app has a build script
+      # This only runs if your package.json has a "build" script defined
+      - name: Build the application
+        run: npm run build --if-present
+
+      # Step 5: Bundle all app files + node_modules into a zip file
+      - name: Bundle app into ZIP
+        run: |
+          zip -r app_bundle.zip . -x "*.git*" "*.github*"
+
+      # Step 6: Verify output
+      - name: List files and folders
+        run: ls -alh
