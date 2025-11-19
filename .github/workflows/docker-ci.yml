@@ -43,5 +43,3 @@ jobs:
           command: scan
           image: ${{ env.IMAGE }}:latest
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          write-comment: true
-          summary: true
