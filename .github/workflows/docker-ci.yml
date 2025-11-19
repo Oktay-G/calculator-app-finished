@@ -8,49 +8,40 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ Checkout repository
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2️⃣ Docker Hub login
       - name: Log in to Docker Hub
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      # 3️⃣ Set image name
       - name: Set Docker Image Name
-        id: vars
         run: echo "IMAGE=${{ secrets.DOCKERHUB_USERNAME }}/calculator-app" >> $GITHUB_ENV
 
-      # 4️⃣ Build & tag image
       - name: Build Docker image
         run: |
           docker build -t $IMAGE:latest .
 
-          # Tag image voor release tags
           if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
             TAG_NAME=${GITHUB_REF#refs/tags/}
             echo "TAG=$TAG_NAME" >> $GITHUB_ENV
             docker tag $IMAGE:latest $IMAGE:$TAG_NAME
           fi
 
-      # 5️⃣ Push Docker images
       - name: Push Docker images
         run: |
           docker push $IMAGE:latest
-
           if [[ -n "${TAG}" ]]; then
             docker push $IMAGE:$TAG
           fi
 
-      # 6️⃣ Vulnerability scan met Docker Scout (v1)
       - name: Scan Docker image for vulnerabilities
         uses: docker/scout-action@v1
         with:
           image: ${{ env.IMAGE }}:latest
-          command: scan
+          scout-args: "scan"
           github-token: ${{ secrets.GITHUB_TOKEN }}
           write-comment: true
           summary: true
