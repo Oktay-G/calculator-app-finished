@@ -38,7 +38,7 @@ jobs:
           fi
 
       - name: Scan Docker image for vulnerabilities
-        uses: docker/scout-action@v1
+        uses: docker/scout-action@v1.7.0
         with:
           command: scan
           image: ${{ env.IMAGE }}:latest
