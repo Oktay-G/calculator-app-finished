@@ -42,7 +42,9 @@ jobs:
 
       # 5️⃣ Scan Docker image for CVEs
       - name: Scan Docker image for vulnerabilities
-        uses: docker/scout-action@v1
+        uses: docker/scout-action@v2
         with:
           image: ${{ secrets.DOCKERHUB_USERNAME }}/calculator-app:latest
           command: scan
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          write-comment: true
