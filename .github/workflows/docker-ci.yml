@@ -40,8 +40,8 @@ jobs:
       - name: Scan Docker image for vulnerabilities
         uses: docker/scout-action@v1
         with:
+          command: scan
           image: ${{ env.IMAGE }}:latest
-          scout-args: "scan"
           github-token: ${{ secrets.GITHUB_TOKEN }}
           write-comment: true
           summary: true
