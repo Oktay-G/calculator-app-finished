@@ -23,7 +23,6 @@ jobs:
       - name: Build Docker image
         run: |
           docker build -t $IMAGE:latest .
-
           if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
             TAG_NAME=${GITHUB_REF#refs/tags/}
             echo "TAG=$TAG_NAME" >> $GITHUB_ENV
@@ -37,9 +36,10 @@ jobs:
             docker push $IMAGE:$TAG
           fi
 
-      - name: Scan Docker image for vulnerabilities
-        uses: docker/scout-action@v1.7.0
-        with:
-          command: scan
-          image: ${{ env.IMAGE }}:latest
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Install Docker Scout
+        run: |
+          curl -fsSL https://raw.githubusercontent.com/docker/scout-cli/main/install.sh | sh
+          docker scout version
+
+      - name: Scan image for CVEs (Docker Scout CLI)
+        run: docker scout cves $IMAGE:latest
