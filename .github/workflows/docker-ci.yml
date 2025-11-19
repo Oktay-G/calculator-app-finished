@@ -41,14 +41,13 @@ jobs:
         run: |
           docker push $IMAGE:latest
 
-          # Push extra tag indien git tag aanwezig is
           if [[ -n "${TAG}" ]]; then
             docker push $IMAGE:$TAG
           fi
 
-      # 6️⃣ Vulnerability scan met Docker Scout
+      # 6️⃣ Vulnerability scan met Docker Scout (v1)
       - name: Scan Docker image for vulnerabilities
-        uses: docker/scout-action@v2
+        uses: docker/scout-action@v1
         with:
           image: ${{ env.IMAGE }}:latest
           command: scan
