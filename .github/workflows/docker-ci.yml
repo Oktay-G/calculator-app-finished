@@ -45,3 +45,4 @@ jobs:
         uses: docker/scout-action@v1
         with:
           image: ${{ secrets.DOCKERHUB_USERNAME }}/calculator-app:latest
+          command: scan
