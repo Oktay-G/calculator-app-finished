@@ -1,6 +1,5 @@
 name: Docker CI
 
-# Alleen manueel triggeren
 on:
   workflow_dispatch:
 
@@ -24,11 +23,11 @@ jobs:
       - name: Build Docker image
         run: |
           IMAGE_NAME=${{ secrets.DOCKERHUB_USERNAME }}/calculator-app
-          # Tag als latest
           docker build -t $IMAGE_NAME:latest .
-          # Tag met git tag als beschikbaar
-          if [ "${GITHUB_REF_TYPE}" == "tag" ]; then
-            docker tag $IMAGE_NAME:latest $IMAGE_NAME:${GITHUB_REF_NAME}
+          # Tag met git tag als aanwezig
+          if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
+            TAG_NAME=${GITHUB_REF#refs/tags/}
+            docker tag $IMAGE_NAME:latest $IMAGE_NAME:$TAG_NAME
           fi
 
       # 4️⃣ Push Docker image
@@ -36,8 +35,9 @@ jobs:
         run: |
           IMAGE_NAME=${{ secrets.DOCKERHUB_USERNAME }}/calculator-app
           docker push $IMAGE_NAME:latest
-          if [ "${GITHUB_REF_TYPE}" == "tag" ]; then
-            docker push $IMAGE_NAME:${GITHUB_REF_NAME}
+          if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
+            TAG_NAME=${GITHUB_REF#refs/tags/}
+            docker push $IMAGE_NAME:$TAG_NAME
           fi
 
       # 5️⃣ Scan Docker image for CVEs
